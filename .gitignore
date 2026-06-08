@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# IDEs
+.vscode/
+.idea/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Data and Weights (Tuyệt đối không push các file này lên)
+data/
+checkpoints/*.pt
+checkpoints/*.pth
+checkpoints/*.h5
+
+# Virtual Environment
+venv/
+.env
