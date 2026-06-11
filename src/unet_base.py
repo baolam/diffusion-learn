@@ -71,12 +71,12 @@ class DownBlock(nn.Module):
 
         self.residual_input_conv = nn.ModuleList(
             [ 
-                nn.Conv2d(in_channels if i == 0 else out_channels, out_channels, kernel_size=1, stride=1, padding=1)
+                nn.Conv2d(in_channels if i == 0 else out_channels, out_channels, kernel_size=1)
              for i in range(num_layers)
             ]
         )
 
-        self.down_sample_conv = nn.Conv2d(out_channels, out_channels, 4, 2, 1) if self.double else nn.Identity()
+        self.down_sample_conv = nn.Conv2d(out_channels, out_channels, 4, 2, 1) if self.down_sample else nn.Identity()
     
     def forward(self, x, t_emb):
         out = x
@@ -190,7 +190,7 @@ class MidBlock(nn.Module):
             out = self.resnet_conv_first[i+1](out)
             out = out + self.t_emb_layers[i+1](t_emb)[:, :, None, None]
             out = self.resnet_conv_second[i+1](out)
-            out = out + self.resnet_conv_second[i+1](resnet_input)
+            out = out + self.residual_input_conv[i+1](resnet_input)
 
         return out
     
@@ -271,7 +271,7 @@ class UpBlock(nn.Module):
 
             batch_size, channels, h, w = out.shape
             in_attn = out.reshape(batch_size, channels, h * w)
-            in_attn = self.attention_norms(in_attn)
+            in_attn = self.attention_norms[i](in_attn)
             in_attn = in_attn.transpose(1, 2)
 
             out_attn, _ = self.attentions[i](in_attn, in_attn, in_attn)
@@ -286,7 +286,7 @@ class UNet(nn.Module):
     def __init__(self, model_configs ,*args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
-        in_channels = model_configs["in_channels"]
+        in_channels = model_configs["im_channels"]
 
         self.down_channels = model_configs["down_channels"]
         self.mid_channels = model_configs["mid_channels"]
@@ -335,7 +335,7 @@ class UNet(nn.Module):
     def forward(self, x, t):
         out = self.conv_in(x)
 
-        t_emb = get_time_embedding(torch.as_tensor(t).long, self.t_emb_dim)
+        t_emb = get_time_embedding(torch.as_tensor(t, dtype=torch.long), self.t_emb_dim)
         t_emb = self.t_proj(t_emb)
 
         down_outs = []
