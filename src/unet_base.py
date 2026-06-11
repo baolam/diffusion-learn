@@ -326,7 +326,7 @@ class UNet(nn.Module):
         self.ups = nn.ModuleList([])
         for i in reversed(range(len(self.down_channels) - 1)):
             self.ups.append(
-                UpBlock(self.down_channels[i] * 2, self.down_channels[-1] if i != 0 else 16, self.t_emb_dim, up_sample=self.down_sample[i], num_layers=self.num_up_layers)
+                UpBlock(self.down_channels[i] * 2, self.down_channels[i-1] if i != 0 else 16, self.t_emb_dim, up_sample=self.down_sample[i], num_layers=self.num_up_layers)
             )
         
         self.norm_out = nn.GroupNorm(8 ,16)
