@@ -19,8 +19,11 @@ def train(args):
         except yaml.YAMLError as e:
             print(e)
     
+    print("====================================")
     print(config)
-
+    print("====================================")
+    print("Running at device: ", device)
+    
     ### Get config ###
     diffusion_config = config["diffusion_params"]
     dataset_config = config["dataset_params"]
