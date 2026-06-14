@@ -23,7 +23,7 @@ def train(args):
     print(config)
     print("====================================")
     print("Running at device: ", device)
-    
+
     ### Get config ###
     diffusion_config = config["diffusion_params"]
     dataset_config = config["dataset_params"]
@@ -77,11 +77,11 @@ def train(args):
 
         torch.save(model.state_dict(), os.path.join(train_config['ckpt_name']))
         
-        if args.drive != "No":
-            # Path to store in drive!
-            # /content/drive/MyDrive/checkpoints/
-            torch.save(model.state_dict(), os.path.join(args.drive, "ddpm_ckpt.pth"))
-            print("Stored to drive!")
+        # if args.drive != "No":
+        #     # Path to store in drive!
+        #     # /content/drive/MyDrive/checkpoints/
+        #     torch.save(model.state_dict(), os.path.join(args.drive, "ddpm_ckpt.pth"))
+        #     print("Stored to drive!")
             
         print("Done training!")
 
