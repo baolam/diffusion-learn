@@ -57,14 +57,15 @@ def train(args):
 
             im = im.float().to(device)
 
-            noise = torch.rand_like(im).to(device)
+            noise = torch.randn_like(im).to(device)
 
             t = torch.randint(0, diffusion_config['num_timesteps'], (im.shape[0], )).to(device)
 
             noisy_im = scheduler.add_noise(im, noise, t)
             noise_pred = model(noisy_im, t)
 
-            loss = criterion(noise_pred, noisy_im)
+            ### NOTICE: Wrong prediction here :)
+            loss = criterion(noise_pred, noise)
             losses.append(loss.item())
 
             loss.backward()

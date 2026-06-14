@@ -21,9 +21,9 @@ def sample(model : UNet, scheduler : LinearNoiseScheduler, train_config, model_c
         xt, x0_pred = scheduler.sample_prev_timestep(xt, noise_pred, torch.as_tensor(i).to(device))
 
         # Save x0
-        # ims = torch.clamp(x0_pred, -1., 1.).detach().cpu()
-        ims = (x0_pred * 0.5) + 0.5
-        ims = torch.clamp(ims, -1., 1.).detach().cpu()
+        ims = torch.clamp(x0_pred, -1., 1.).detach().cpu()
+        ims = (ims + 1) / 2
+        # ims = torch.clamp(ims, -1., 1.).detach().cpu()
 
         grid = make_grid(ims, nrow=train_config['num_grid_rows'])
         img = torchvision.transforms.ToPILImage()(grid)
@@ -47,6 +47,7 @@ def infer(args):
     model = UNet(model_config).to(device)
     model.load_state_dict(torch.load(train_config['ckpt_name'], map_location=device))
     model.eval()
+    print("Load model completed!")
 
     scheduler = LinearNoiseScheduler(**diffusion_config)
 
