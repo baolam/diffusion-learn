@@ -73,11 +73,19 @@ def train(args):
         ))
 
         torch.save(model.state_dict(), os.path.join(train_config['ckpt_name']))
+        
+        if args.drive != "No":
+            # Path to store in drive!
+            # /content/drive/MyDrive/checkpoints/
+            torch.save(model.state_dict(), os.path.join(args.drive, "ddpm_ckpt.pth"))
+            print("Stored to drive!")
+            
         print("Done training!")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Arguments for ddpm training")
     parser.add_argument('--config', dest='config_path', default='configs/default.yaml', type=str)
+    parser.add_argument('--drive', dest='strorage drive', type=str, default="No")
 
     args = parser.parse_args()
     train(args)
