@@ -5,7 +5,7 @@ import os
 import re
 
 image_folder = 'samples'  # Thư mục chứa ảnh như trong hình của bạn
-video_name = 'mnist_evolution.mp4'  # Tên video muốn xuất ra
+video_name = 'mnist_evolution_ddim.mp4'  # Tên video muốn xuất ra
 
 images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
 

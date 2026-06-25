@@ -26,7 +26,10 @@ class DDIM_NoiseScheduler:
         
         pred_x0 = (xt - torch.sqrt(1 - alpha_cum_prod_t) * noise_pred) / torch.sqrt(alpha_cum_prod_t)
 
+        # Bug fix: If x0 is clamped, we must re-derive epsilon (noise_pred)
+        # based on the clamped x0 to maintain mathematical consistency in DDIM.
         pred_x0 = torch.clamp(pred_x0, -1., 1.)
+        noise_pred = (xt - torch.sqrt(alpha_cum_prod_t) * pred_x0) / torch.sqrt(1 - alpha_cum_prod_t)
 
         if eta > 0:
             sigma = eta * torch.sqrt((1 - alpha_cum_prod_prev) / (1 - alpha_cum_prod_t)) * torch.sqrt(1 - alpha_cum_prod_t / alpha_cum_prod_prev)
