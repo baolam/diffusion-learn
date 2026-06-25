@@ -109,7 +109,7 @@ class MidBlock(nn.Module):
         super().__init__(*args, **kwargs)
         self.num_layers = num_layers
 
-        ### NOTICE: num_layers + 1
+        ### NOTE: num_layers + 1
 
         self.resnet_conv_first = nn.ModuleList(
             [
